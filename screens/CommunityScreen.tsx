@@ -17,7 +17,7 @@ const CommunityScreen = () => {
 export default CommunityScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff', paddingTop: 40 },
   content: { padding: 20 },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
   description: { fontSize: 16, color: '#444' },

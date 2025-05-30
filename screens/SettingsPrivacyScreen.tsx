@@ -31,7 +31,7 @@ const SettingsPrivacyScreen = () => {
 export default SettingsPrivacyScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff', paddingTop: 40 },
   content: { padding: 20 },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
   settingRow: {
