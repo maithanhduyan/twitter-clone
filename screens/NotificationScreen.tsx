@@ -7,10 +7,13 @@ import {
   TouchableOpacity, 
   SafeAreaView,
   RefreshControl,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
-import Header from '../components/Header';
+import headerNotification from '../components/Header';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const mockNotifications = [
   {
@@ -235,15 +238,22 @@ const NotificationScreen = () => {
       </View>
     </TouchableOpacity>
   );
-
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
   const CustomHeader = () => (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
-        <View style={styles.avatar}>
+        {/* <View style={styles.avatar}>
           <FontAwesome name="user" size={20} color="white" />
-        </View>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        </View> */}
+        {/* Avatar */}
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Image
+            source={{ uri: 'https://i.pravatar.cc/300' }}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
       </View>
+      <Text style={styles.headerTitle}>Notifications</Text>
       <TouchableOpacity 
         style={styles.settingsButton}
         onPress={handleSettingsPress}
@@ -345,11 +355,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  headerTitle: {
+   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
-    marginLeft: 12
+    color: '#000'
   },
   settingsButton: {
     padding: 8,
@@ -403,16 +412,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  avatar: { 
-    width: 32, 
-    height: 32, 
-    borderRadius: 16, 
-    backgroundColor: '#1DA1F2', 
-    justifyContent: 'center', 
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'white',
-    position: 'relative'
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1DA1F2',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   verifiedBadge: {
     position: 'absolute',

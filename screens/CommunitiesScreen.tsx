@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity, 
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
   SafeAreaView,
   RefreshControl,
   Alert,
   ScrollView,
-  Modal
+  Modal,
+  Image
 } from 'react-native';
 import { FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const mockCommunities = [
   {
@@ -130,6 +133,7 @@ const CommunitiesScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const scrollRef = useRef(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -140,23 +144,23 @@ const CommunitiesScreen = () => {
   };
 
   const handleJoinCommunity = (communityId) => {
-    setCommunities(prev => 
-      prev.map(community => 
-        community.id === communityId 
+    setCommunities(prev =>
+      prev.map(community =>
+        community.id === communityId
           ? { ...community, isJoined: !community.isJoined }
           : community
       )
     );
-    
+
     const community = communities.find(c => c.id === communityId);
     Alert.alert(
-      'Thành công', 
+      'Thành công',
       community?.isJoined ? `Đã rời khỏi ${community.name}` : `Đã tham gia ${community.name}`
     );
   };
 
   const handlePostAction = (postId, action) => {
-    setPosts(prev => 
+    setPosts(prev =>
       prev.map(post => {
         if (post.id === postId) {
           switch (action) {
@@ -188,7 +192,7 @@ const CommunitiesScreen = () => {
 
   const handleMenuAction = (action) => {
     setMenuVisible(false);
-    
+
     switch (action) {
       case 'create':
         Alert.alert('Tạo cộng đồng', 'Tính năng tạo cộng đồng mới');
@@ -221,17 +225,27 @@ const CommunitiesScreen = () => {
     });
   };
 
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
+
   const CustomHeader = () => (
+
     <View style={styles.header}>
+      {/* Avatar */}
+      <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <Image
+          source={{ uri: 'https://i.pravatar.cc/300' }}
+          style={styles.avatar}
+        />
+      </TouchableOpacity>
       <Text style={styles.headerTitle}>Communities</Text>
       <View style={styles.headerActions}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.headerButton}
           onPress={() => setSearchVisible(true)}
         >
           <FontAwesome name="search" size={20} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.headerButton}
           onPress={() => setMenuVisible(true)}
         >
@@ -241,38 +255,63 @@ const CommunitiesScreen = () => {
     </View>
   );
 
-  const CategoryTabs = () => (
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-      style={styles.categoriesContainer}
-      contentContainerStyle={styles.categoriesContent}
-    >
-      {categories.map((category) => (
-        <TouchableOpacity
-          key={category.id}
-          style={[
-            styles.categoryTab,
-            activeCategory === category.id && styles.activeCategoryTab
-          ]}
-          onPress={() => setActiveCategory(category.id)}
-        >
-          <Text style={[
-            styles.categoryIcon,
-            activeCategory === category.id && styles.activeCategoryIcon
-          ]}>
-            {category.icon}
-          </Text>
-          <Text style={[
-            styles.categoryText,
-            activeCategory === category.id && styles.activeCategoryText
-          ]}>
-            {category.name}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
+  const CategoryTabs = () => {
+    const handleCategoryPress = (index, categoryId) => {
+      setActiveCategory(categoryId);
+
+      // Auto scroll to center the selected tab
+      const tabWidth = 120; // Approximate width of each tab
+      const screenWidth = 350; // Approximate screen width
+      const scrollToX = Math.max(0, (index * tabWidth) - (screenWidth / 2) + (tabWidth / 2));
+
+      scrollRef.current?.scrollTo({
+        x: scrollToX,
+        animated: true
+      });
+    };
+
+    return (
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoriesContainer}
+        contentContainerStyle={styles.categoriesContent}
+      >
+        {categories.map((category, index) => {
+          const isActive = activeCategory === category.id;
+
+          return (
+            <TouchableOpacity
+              key={category.id}
+              style={[
+                styles.categoryTab,
+                isActive && styles.activeCategoryTab
+              ]}
+              onPress={() => handleCategoryPress(index, category.id)}
+            >
+              <Text
+                style={[
+                  styles.categoryIcon,
+                  isActive && styles.activeCategoryIcon
+                ]}
+              >
+                {category.icon}
+              </Text>
+              <Text
+                style={[
+                  styles.categoryText,
+                  isActive && styles.activeCategoryText
+                ]}
+              >
+                {category.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    );
+  };
 
   const renderPost = ({ item }) => (
     <View style={styles.post}>
@@ -316,7 +355,7 @@ const CommunitiesScreen = () => {
         )}
 
         <View style={styles.postActions}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.action}
             onPress={() => Alert.alert('Trả lời', `Trả lời bài viết của ${item.author}`)}
           >
@@ -324,7 +363,7 @@ const CommunitiesScreen = () => {
             <Text style={styles.actionText}>{formatNumber(item.comments)}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.action, item.isRetweeted && styles.activeRetweet]}
             onPress={() => handlePostAction(item.id, 'retweet')}
           >
@@ -334,7 +373,7 @@ const CommunitiesScreen = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.action, item.isLiked && styles.activeLike]}
             onPress={() => handlePostAction(item.id, 'like')}
           >
@@ -349,7 +388,7 @@ const CommunitiesScreen = () => {
             <Text style={styles.actionText}>{formatNumber(item.views)}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.action}
             onPress={() => handlePostAction(item.id, 'bookmark')}
           >
@@ -367,28 +406,28 @@ const CommunitiesScreen = () => {
       animationType="fade"
       onRequestClose={() => setMenuVisible(false)}
     >
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.modalOverlay}
         onPress={() => setMenuVisible(false)}
       >
         <View style={styles.menuContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => handleMenuAction('create')}
           >
             <FontAwesome5 name="plus-circle" size={20} color="#1DA1F2" />
             <Text style={styles.menuText}>Tạo cộng đồng</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => handleMenuAction('joined')}
           >
             <FontAwesome5 name="users" size={20} color="#1DA1F2" />
             <Text style={styles.menuText}>Cộng đồng đã tham gia</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.menuItem}
             onPress={() => handleMenuAction('manage')}
           >
@@ -406,7 +445,7 @@ const CommunitiesScreen = () => {
     <SafeAreaView style={styles.container}>
       <CustomHeader />
       <CategoryTabs />
-      
+
       <FlatList
         data={filteredPosts}
         renderItem={renderPost}
@@ -447,10 +486,10 @@ const CommunitiesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#f7f9fa', 
-    paddingTop: 40 
+  container: {
+    flex: 1,
+    backgroundColor: '#f7f9fa',
+    paddingTop: 40
   },
 
   // Header styles
@@ -483,11 +522,15 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#e1e8ed'
+    borderBottomColor: '#e1e8ed',
+    maxHeight: 50,
+    minHeight: 50,
   },
   categoriesContent: {
     paddingHorizontal: 16,
-    paddingVertical: 12
+    paddingVertical: 12,
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   categoryTab: {
     flexDirection: 'row',
@@ -498,11 +541,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#f7f9fa',
     borderWidth: 1,
-    borderColor: '#e1e8ed'
+    borderColor: '#e1e8ed',
+    maxHeight: 50,
   },
   activeCategoryTab: {
     backgroundColor: '#1DA1F2',
-    borderColor: '#1DA1F2'
+    borderColor: '#1DA1F2',
+    maxHeight: 50
   },
   categoryIcon: {
     fontSize: 16,
@@ -512,9 +557,10 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#657786',
-    fontWeight: '500'
+    fontWeight: '400',
+    paddingTop: 2,
   },
   activeCategoryText: {
     color: 'white',
@@ -565,13 +611,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 8
   },
-  avatar: { 
-    width: 40, 
-    height: 40, 
-    borderRadius: 20, 
-    backgroundColor: '#1DA1F2', 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1DA1F2',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   postHeaderInfo: {
     flex: 1,
@@ -623,21 +669,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14
   },
-  postActions: { 
-    flexDirection: 'row', 
+  postActions: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingRight: 20
   },
-  action: { 
-    flexDirection: 'row', 
+  action: {
+    flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
     borderRadius: 20
   },
-  actionText: { 
-    marginLeft: 4, 
-    fontSize: 14, 
-    color: '#657786' 
+  actionText: {
+    marginLeft: 4,
+    fontSize: 14,
+    color: '#657786'
   },
   activeLike: {
     backgroundColor: '#ffeaa7'
@@ -720,16 +766,16 @@ const styles = StyleSheet.create({
   },
 
   // FAB styles
-  fab: { 
-    position: 'absolute', 
-    bottom: 80, 
-    right: 20, 
-    width: 56, 
-    height: 56, 
-    borderRadius: 28, 
-    backgroundColor: '#1DA1F2', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+  fab: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#1DA1F2',
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
