@@ -93,106 +93,108 @@ const SettingsPrivacyScreen = () => {
   return (
     <View style={styles.container}>
       <Header />
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <View style={styles.headerSection}>
-          <Text style={styles.title}>Settings</Text>
-          <Text style={styles.username}>@username</Text>
-        </View>
+      <View style={styles.contentWrapper}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Header Section */}
+          <View style={styles.headerSection}>
+            <Text style={styles.title}>Settings</Text>
+            <Text style={styles.username}>@username</Text>
+          </View>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <FontAwesome name="search" size={16} color="#657786" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search Settings"
-            placeholderTextColor="#657786"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
-
-        {/* Quick Settings */}
-        <View style={styles.quickSettings}>
-          <Text style={styles.sectionTitle}>Quick Settings</Text>
-          
-          <View style={styles.quickSettingRow}>
-            <View style={styles.quickSettingLeft}>
-              <FontAwesome name="moon-o" size={18} color="#1DA1F2" />
-              <Text style={styles.quickSettingLabel}>Dark mode</Text>
-            </View>
-            <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
-              trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
-              thumbColor={darkMode ? '#fff' : '#f4f3f4'}
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <FontAwesome name="search" size={16} color="#657786" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search Settings"
+              placeholderTextColor="#657786"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
           </View>
 
-          <View style={styles.quickSettingRow}>
-            <View style={styles.quickSettingLeft}>
-              <FontAwesome name="bell" size={18} color="#1DA1F2" />
-              <Text style={styles.quickSettingLabel}>Notifications</Text>
-            </View>
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
-              thumbColor={notifications ? '#fff' : '#f4f3f4'}
-            />
-          </View>
-
-          <View style={styles.quickSettingRow}>
-            <View style={styles.quickSettingLeft}>
-              <FontAwesome name="lock" size={18} color="#1DA1F2" />
-              <Text style={styles.quickSettingLabel}>Private account</Text>
-            </View>
-            <Switch
-              value={privateAccount}
-              onValueChange={setPrivateAccount}
-              trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
-              thumbColor={privateAccount ? '#fff' : '#f4f3f4'}
-            />
-          </View>
-        </View>
-
-        {/* Settings Sections */}
-        <View style={styles.sectionsContainer}>
-          <Text style={styles.sectionTitle}>All Settings</Text>
-          
-          {filteredSections.map((section, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.settingSection}
-              onPress={() => handleSectionPress(section)}
-            >
-              <View style={styles.sectionLeft}>
-                <View style={styles.sectionIconContainer}>
-                  <FontAwesome name={section.icon as any} size={20} color="#1DA1F2" />
-                </View>
-                <View style={styles.sectionTextContainer}>
-                  <Text style={styles.sectionTitleText}>{section.title}</Text>
-                  <Text style={styles.sectionDescription}>{section.description}</Text>
-                </View>
+          {/* Quick Settings */}
+          <View style={styles.quickSettings}>
+            <Text style={styles.sectionTitle}>Quick Settings</Text>
+            
+            <View style={styles.quickSettingRow}>
+              <View style={styles.quickSettingLeft}>
+                <FontAwesome name="moon-o" size={18} color="#1DA1F2" />
+                <Text style={styles.quickSettingLabel}>Dark mode</Text>
               </View>
-              <FontAwesome name="chevron-right" size={16} color="#657786" />
-            </TouchableOpacity>
-          ))}
-        </View>
+              <Switch
+                value={darkMode}
+                onValueChange={setDarkMode}
+                trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
+                thumbColor={darkMode ? '#fff' : '#f4f3f4'}
+              />
+            </View>
 
-        {/* Account Actions */}
-        <View style={styles.accountActions}>
-          <TouchableOpacity style={styles.actionButton}>
-            <FontAwesome name="sign-out" size={18} color="#e0245e" />
-            <Text style={styles.actionButtonText}>Log out</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={[styles.actionButton, styles.dangerButton]}>
-            <FontAwesome name="trash" size={18} color="#e0245e" />
-            <Text style={[styles.actionButtonText, styles.dangerText]}>Deactivate account</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+            <View style={styles.quickSettingRow}>
+              <View style={styles.quickSettingLeft}>
+                <FontAwesome name="bell" size={18} color="#1DA1F2" />
+                <Text style={styles.quickSettingLabel}>Notifications</Text>
+              </View>
+              <Switch
+                value={notifications}
+                onValueChange={setNotifications}
+                trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
+                thumbColor={notifications ? '#fff' : '#f4f3f4'}
+              />
+            </View>
+
+            <View style={styles.quickSettingRow}>
+              <View style={styles.quickSettingLeft}>
+                <FontAwesome name="lock" size={18} color="#1DA1F2" />
+                <Text style={styles.quickSettingLabel}>Private account</Text>
+              </View>
+              <Switch
+                value={privateAccount}
+                onValueChange={setPrivateAccount}
+                trackColor={{ false: '#e1e8ed', true: '#1DA1F2' }}
+                thumbColor={privateAccount ? '#fff' : '#f4f3f4'}
+              />
+            </View>
+          </View>
+
+          {/* Settings Sections */}
+          <View style={styles.sectionsContainer}>
+            <Text style={styles.sectionTitle}>All Settings</Text>
+            
+            {filteredSections.map((section, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.settingSection}
+                onPress={() => handleSectionPress(section)}
+              >
+                <View style={styles.sectionLeft}>
+                  <View style={styles.sectionIconContainer}>
+                    <FontAwesome name={section.icon as any} size={20} color="#1DA1F2" />
+                  </View>
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.sectionTitleText}>{section.title}</Text>
+                    <Text style={styles.sectionDescription}>{section.description}</Text>
+                  </View>
+                </View>
+                <FontAwesome name="chevron-right" size={16} color="#657786" />
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Account Actions */}
+          <View style={styles.accountActions}>
+            <TouchableOpacity style={styles.actionButton}>
+              <FontAwesome name="sign-out" size={18} color="#e0245e" />
+              <Text style={styles.actionButtonText}>Log out</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.actionButton, styles.dangerButton]}>
+              <FontAwesome name="trash" size={18} color="#e0245e" />
+              <Text style={[styles.actionButtonText, styles.dangerText]}>Deactivate account</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -204,6 +206,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 40,
+  },
+  contentWrapper: {
+    flex: 1,
+    marginBottom: 60, // Space for tab navigator
   },
   content: {
     flex: 1,
@@ -311,7 +317,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#e1e8ed',
-    marginBottom: 80,
+    paddingBottom: 40,
   },
   actionButton: {
     flexDirection: 'row',
