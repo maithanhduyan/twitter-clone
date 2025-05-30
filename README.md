@@ -238,7 +238,7 @@ Khi bạn nhấn vào dấu **(...)**, một menu ngữ cảnh sẽ hiện ra v�
 Tùy chọn cụ thể có thể thay đổi tùy vào ngữ cảnh (ví dụ: bạn có đang theo dõi người đó không, bạn có là chủ bài đăng không, v.v.).
 
 ### Bài đăng (Post)
-Dưới mỗi bài đăng (tweet) trên Twitter (X), bạn sẽ thấy một hàng các biểu tượng (icon) đại diện cho các chức năng tương tác. Trong ảnh bạn gửi, từ trái sang phải, các icon lần lượt là:
+Dưới mỗi bài đăng (tweet) trên Twitter (X), bạn sẽ thấy một hàng các biểu tượng (icon) đại diện cho các chức năng tương tác. Từ trái sang phải, các icon lần lượt là:
 
 ---
 
@@ -277,7 +277,7 @@ Dưới mỗi bài đăng (tweet) trên Twitter (X), bạn sẽ thấy một hà
 
 * **Chức năng**: Mở menu chia sẻ bài đăng với các tùy chọn:
 
-  * Gửi qua tin nhắn trên X.
+  * Gửi qua tin nhắn.
   * Sao chép liên kết.
   * Chia sẻ ngoài nền tảng (email, mạng xã hội khác).
   * Bookmark (lưu bài viết).

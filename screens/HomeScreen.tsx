@@ -4,23 +4,14 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import Header from '../components/Header';
+import TweetMenu from '../components/TweetMenu';
 
 const tweets = [
-  { id: '1', name: 'Elon Musk', username: 'elonmusk', content: 'Coding is magic.', time: '2h', likes: 4523, retweets: 1203, comments: 432, isFollowed: true },
-  { id: '2', name: 'Bill Gates', username: 'BillGates', content: 'AI must be developed responsibly.', time: '5h', likes: 7892, retweets: 2341, comments: 876, isFollowed: true },
-  { id: '3', name: 'Tim Cook', username: 'tim_cook', content: 'Innovation is in our DNA.', time: '8h', likes: 3421, retweets: 892, comments: 234, isFollowed: false },
-  { id: '4', name: 'Satya Nadella', username: 'satyanadella', content: 'Technology should empower everyone.', time: '12h', likes: 2156, retweets: 567, comments: 189, isFollowed: true },
-  { id: '5', name: 'Jeff Bezos', username: 'JeffBezos', content: 'Customer obsession is everything.', time: '15h', likes: 5432, retweets: 1876, comments: 543, isFollowed: false },
-  { id: '6', name: 'Mark Zuckerberg', username: 'zuck', content: 'Building the metaverse, one step at a time.', time: '18h', likes: 3210, retweets: 987, comments: 321, isFollowed: true },
-  { id: '7', name: 'Sundar Pichai', username: 'sundarpichai', content: 'AI will benefit humanity.', time: '20h', likes: 2987, retweets: 654, comments: 198, isFollowed: false },
-  { id: '8', name: 'Jack Dorsey', username: 'jack', content: 'Decentralization is the future.', time: '1d', likes: 4165, retweets: 1432, comments: 567, isFollowed: true },
-  { id: '9', name: 'Reed Hastings', username: 'reedhastings', content: 'Content is king, but distribution is queen.', time: '1d', likes: 1876, retweets: 432, comments: 156, isFollowed: false },
-  { id: '10', name: 'Jensen Huang', username: 'JenHsun', content: 'The AI revolution is just beginning.', time: '1d', likes: 3654, retweets: 998, comments: 287, isFollowed: true },
-  { id: '11', name: 'Lisa Su', username: 'LisaSu_AMD', content: 'High performance computing for everyone.', time: '2d', likes: 2543, retweets: 765, comments: 198, isFollowed: false },
-  { id: '12', name: 'Dara Khosrowshahi', username: 'dkhos', content: 'Transportation is evolving rapidly.', time: '2d', likes: 1987, retweets: 543, comments: 123, isFollowed: true },
-  { id: '13', name: 'Patrick Collison', username: 'patrickc', content: 'Building infrastructure for the internet economy.', time: '2d', likes: 2876, retweets: 687, comments: 234, isFollowed: false },
-  { id: '14', name: 'Brian Chesky', username: 'bchesky', content: 'Belong anywhere. Travel is back!', time: '3d', likes: 4321, retweets: 1234, comments: 456, isFollowed: true },
-  { id: '15', name: 'Daniel Ek', username: 'eldsjal', content: 'Music connects us all.', time: '3d', likes: 3165, retweets: 876, comments: 298, isFollowed: false }
+  { id: '1', name: 'Elon Musk', username: 'elonmusk', content: 'Coding is magic.', time: '2h', likes: 4523, retweets: 1203, comments: 432, views: 125000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: '2', name: 'Bill Gates', username: 'BillGates', content: 'AI must be developed responsibly.', time: '5h', likes: 7892, retweets: 2341, comments: 876, views: 198000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: '3', name: 'Tim Cook', username: 'tim_cook', content: 'Innovation is in our DNA.', time: '8h', likes: 3421, retweets: 892, comments: 234, views: 87000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: '4', name: 'Satya Nadella', username: 'satyanadella', content: 'Technology should empower everyone.', time: '12h', likes: 2156, retweets: 567, comments: 189, views: 65000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: '5', name: 'Jeff Bezos', username: 'JeffBezos', content: 'Customer obsession is everything.', time: '15h', likes: 5432, retweets: 1876, comments: 543, views: 142000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
 ];
 
 const trends = [
@@ -34,10 +25,16 @@ const trends = [
 const HomeScreen = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const [modalVisible, setModalVisible] = useState(false);
+  const [replyModalVisible, setReplyModalVisible] = useState(false);
+  const [retweetModalVisible, setRetweetModalVisible] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
   const [newTweetText, setNewTweetText] = useState('');
+  const [replyText, setReplyText] = useState('');
+  const [quoteText, setQuoteText] = useState('');
   const [tweetList, setTweetList] = useState(tweets);
-  const [activeTab, setActiveTab] = useState('forYou'); // 'forYou' or 'following'
-  const [menuVisible, setMenuVisible] = useState(null); // Track which menu is open
+  const [activeTab, setActiveTab] = useState('forYou');
+  const [menuVisible, setMenuVisible] = useState(null);
+  const [selectedTweet, setSelectedTweet] = useState(null);
 
   const handleCreateTweet = () => {
     if (newTweetText.trim().length === 0) {
@@ -59,7 +56,11 @@ const HomeScreen = () => {
       likes: 0,
       retweets: 0,
       comments: 0,
-      isFollowed: false
+      views: 0,
+      isFollowed: false,
+      isLiked: false,
+      isRetweeted: false,
+      isBookmarked: false
     };
 
     setTweetList([newTweet, ...tweetList]);
@@ -68,7 +69,6 @@ const HomeScreen = () => {
     Alert.alert('Thành công', 'Tweet đã được đăng!');
   };
 
-  // Filter tweets based on active tab
   const getDisplayTweets = () => {
     if (activeTab === 'following') {
       const followingTweets = tweetList.filter(tweet => tweet.isFollowed || tweet.username === 'yourhandle');
@@ -128,79 +128,135 @@ const HomeScreen = () => {
     }
   };
 
-  const renderTweetMenu = (tweet) => (
-    <View style={styles.menuOverlay}>
-      <TouchableOpacity 
-        style={styles.menuBackdrop} 
-        onPress={() => setMenuVisible(null)}
-      />
-      <View style={styles.menuContainer}>
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('follow', tweet)}
-        >
-          <FontAwesome 
-            name={tweet.isFollowed ? "user-minus" : "user-plus"} 
-            size={16} 
-            color="#657786" 
-          />
-          <Text style={styles.menuItemText}>
-            {tweet.isFollowed ? `Bỏ theo dõi @${tweet.username}` : `Theo dõi @${tweet.username}`}
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('notInterested', tweet)}
-        >
-          <FontAwesome name="eye-slash" size={16} color="#657786" />
-          <Text style={styles.menuItemText}>Không quan tâm bài viết này</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('mute', tweet)}
-        >
-          <FontAwesome name="volume-off" size={16} color="#657786" />
-          <Text style={styles.menuItemText}>Tắt tiếng @{tweet.username}</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('block', tweet)}
-        >
-          <FontAwesome name="ban" size={16} color="#e74c3c" />
-          <Text style={[styles.menuItemText, { color: '#e74c3c' }]}>Chặn @{tweet.username}</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.menuSeparator} />
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('report', tweet)}
-        >
-          <FontAwesome name="flag" size={16} color="#e74c3c" />
-          <Text style={[styles.menuItemText, { color: '#e74c3c' }]}>Báo cáo bài viết</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('copyLink', tweet)}
-        >
-          <FontAwesome name="link" size={16} color="#657786" />
-          <Text style={styles.menuItemText}>Sao chép liên kết</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => handleMenuAction('embed', tweet)}
-        >
-          <FontAwesome name="code" size={16} color="#657786" />
-          <Text style={styles.menuItemText}>Nhúng Tweet</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  // Tweet Action Handlers
+  const handleReply = (tweet) => {
+    setSelectedTweet(tweet);
+    setReplyModalVisible(true);
+  };
+
+  const handleSubmitReply = () => {
+    if (replyText.trim().length === 0) {
+      Alert.alert('Lỗi', 'Vui lòng nhập nội dung phản hồi');
+      return;
+    }
+
+    // Update comment count
+    setTweetList(prevTweets => 
+      prevTweets.map(tweet => 
+        tweet.id === selectedTweet.id 
+          ? { ...tweet, comments: tweet.comments + 1 }
+          : tweet
+      )
+    );
+
+    setReplyText('');
+    setReplyModalVisible(false);
+    Alert.alert('Thành công', 'Đã gửi phản hồi!');
+  };
+
+  const handleRetweet = (tweet) => {
+    setSelectedTweet(tweet);
+    setRetweetModalVisible(true);
+  };
+
+  const handleSimpleRetweet = () => {
+    setTweetList(prevTweets => 
+      prevTweets.map(tweet => 
+        tweet.id === selectedTweet.id 
+          ? { 
+              ...tweet, 
+              isRetweeted: !tweet.isRetweeted,
+              retweets: tweet.isRetweeted ? tweet.retweets - 1 : tweet.retweets + 1
+            }
+          : tweet
+      )
+    );
+    setRetweetModalVisible(false);
+    Alert.alert('Thành công', selectedTweet.isRetweeted ? 'Đã hủy retweet' : 'Đã retweet!');
+  };
+
+  const handleQuoteTweet = () => {
+    if (quoteText.trim().length === 0) {
+      Alert.alert('Lỗi', 'Vui lòng nhập nội dung quote tweet');
+      return;
+    }
+
+    const quoteTweet = {
+      id: Date.now().toString(),
+      name: 'You',
+      username: 'yourhandle',
+      content: quoteText.trim(),
+      time: 'now',
+      likes: 0,
+      retweets: 0,
+      comments: 0,
+      views: 0,
+      isFollowed: false,
+      isLiked: false,
+      isRetweeted: false,
+      isBookmarked: false,
+      quotedTweet: selectedTweet
+    };
+
+    setTweetList([quoteTweet, ...tweetList]);
+    setQuoteText('');
+    setRetweetModalVisible(false);
+    Alert.alert('Thành công', 'Đã đăng quote tweet!');
+  };
+
+  const handleLike = (tweet) => {
+    setTweetList(prevTweets => 
+      prevTweets.map(t => 
+        t.id === tweet.id 
+          ? { 
+              ...t, 
+              isLiked: !t.isLiked,
+              likes: t.isLiked ? t.likes - 1 : t.likes + 1
+            }
+          : t
+      )
+    );
+  };
+
+  const handleShare = (tweet) => {
+    setSelectedTweet(tweet);
+    setShareModalVisible(true);
+  };
+
+  const handleShareAction = (action) => {
+    setShareModalVisible(false);
+    
+    switch (action) {
+      case 'message':
+        Alert.alert('Thông báo', 'Đã gửi qua tin nhắn');
+        break;
+      case 'copy':
+        Alert.alert('Thông báo', 'Đã sao chép liên kết');
+        break;
+      case 'email':
+        Alert.alert('Thông báo', 'Đã mở ứng dụng email');
+        break;
+      case 'bookmark':
+        setTweetList(prevTweets => 
+          prevTweets.map(tweet => 
+            tweet.id === selectedTweet.id 
+              ? { ...tweet, isBookmarked: !tweet.isBookmarked }
+              : tweet
+          )
+        );
+        Alert.alert('Thành công', selectedTweet.isBookmarked ? 'Đã bỏ bookmark' : 'Đã bookmark!');
+        break;
+    }
+  };
+
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+  };
 
   const renderTweet = ({ item }) => (
     <View style={styles.tweet}>
@@ -229,19 +285,71 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
+        
         <Text style={styles.tweetText}>{item.content}</Text>
+        
+        {/* Quoted Tweet */}
+        {item.quotedTweet && (
+          <View style={styles.quotedTweet}>
+            <Text style={styles.quotedTweetHeader}>
+              <Text style={styles.quotedTweetName}>{item.quotedTweet.name}</Text> @{item.quotedTweet.username}
+            </Text>
+            <Text style={styles.quotedTweetText}>{item.quotedTweet.content}</Text>
+          </View>
+        )}
+        
         <View style={styles.tweetActions}>
-          <TouchableOpacity style={styles.action}>
-            <FontAwesome5 name="comment" size={16} color="gray" />
+          {/* Reply */
+          /* <TouchableOpacity 
+            style={styles.action}
+            onPress={() => handleReply(item)}
+          >
+            <FontAwesome5 name="comment" size={16} color="#657786" />
             <Text style={styles.actionText}>{item.comments}</Text>
+          </TouchableOpacity> */}
+          
+          {/* Retweet */}
+          <TouchableOpacity 
+            style={styles.action}
+            onPress={() => handleRetweet(item)}
+          >
+            <FontAwesome5 
+              name="retweet" 
+              size={16} 
+              color={item.isRetweeted ? "#00ba7c" : "#657786"} 
+            />
+            <Text style={[styles.actionText, { color: item.isRetweeted ? "#00ba7c" : "#657786" }]}>
+              {item.retweets}
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.action}>
-            <FontAwesome5 name="retweet" size={16} color="gray" />
-            <Text style={styles.actionText}>{item.retweets}</Text>
+          
+          {/* Like */}
+          <TouchableOpacity 
+            style={styles.action}
+            onPress={() => handleLike(item)}
+          >
+            <FontAwesome 
+              name={item.isLiked ? "heart" : "heart-o"} 
+              size={16} 
+              color={item.isLiked ? "#e74c3c" : "#657786"} 
+            />
+            <Text style={[styles.actionText, { color: item.isLiked ? "#e74c3c" : "#657786" }]}>
+              {item.likes}
+            </Text>
           </TouchableOpacity>
+          
+          {/* Views */}
           <TouchableOpacity style={styles.action}>
-            <FontAwesome name="heart" size={16} color="gray" />
-            <Text style={styles.actionText}>{item.likes}</Text>
+            <FontAwesome5 name="chart-bar" size={16} color="#657786" />
+            <Text style={styles.actionText}>{formatNumber(item.views)}</Text>
+          </TouchableOpacity>
+          
+          {/* Share */}
+          <TouchableOpacity 
+            style={styles.action}
+            onPress={() => handleShare(item)}
+          >
+            <FontAwesome5 name="share" size={16} color="#657786" />
           </TouchableOpacity>
         </View>
       </View>
@@ -254,7 +362,11 @@ const HomeScreen = () => {
           animationType="fade"
           onRequestClose={() => setMenuVisible(null)}
         >
-          {renderTweetMenu(item)}
+          <TweetMenu
+            tweet={item}
+            onMenuAction={handleMenuAction}
+            onClose={() => setMenuVisible(null)}
+          />
         </Modal>
       )}
     </View>
@@ -273,19 +385,9 @@ const HomeScreen = () => {
     </View>
   );
 
-  const renderTrend = ({ item }) => (
-    <View style={styles.trend}>
-      <Text style={styles.trendTweets}>{item.tweets}</Text>
-      <Text style={styles.trendTitle}>{item.title}</Text>
-    </View>
-  );
-
   const ListHeaderComponent = () => (
     <>
-      {/* Header */}
       <Header/>
-
-      {/* Tabs */}
       <View style={styles.tabs}>
         <TouchableOpacity 
           style={[styles.tab, activeTab === 'forYou' && styles.activeTab]}
@@ -305,7 +407,6 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Tweet Box - only show in For You tab */}
       {activeTab === 'forYou' && (
         <View style={styles.tweetBox}>
           <View style={styles.avatar}>
@@ -354,7 +455,6 @@ const HomeScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            {/* Modal Header */}
             <View style={styles.modalHeader}>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Text style={styles.cancelButton}>Hủy</Text>
@@ -372,7 +472,6 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Modal Body */}
             <View style={styles.modalBody}>
               <View style={styles.avatar}>
                 <FontAwesome name="user" size={24} color="white" />
@@ -388,7 +487,6 @@ const HomeScreen = () => {
               />
             </View>
 
-            {/* Character Counter */}
             <View style={styles.modalFooter}>
               <Text style={[
                 styles.characterCounter,
@@ -400,6 +498,150 @@ const HomeScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Reply Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={replyModalVisible}
+        onRequestClose={() => setReplyModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setReplyModalVisible(false)}>
+                <Text style={styles.cancelButton}>Hủy</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Trả lời</Text>
+              <TouchableOpacity
+                onPress={handleSubmitReply}
+                style={[
+                  styles.tweetButton,
+                  { opacity: replyText.trim().length > 0 ? 1 : 0.5 }
+                ]}
+                disabled={replyText.trim().length === 0}
+              >
+                <Text style={styles.tweetButtonText}>Trả lời</Text>
+              </TouchableOpacity>
+            </View>
+
+            {selectedTweet && (
+              <View style={styles.originalTweet}>
+                <Text style={styles.originalTweetHeader}>
+                  Trả lời cho <Text style={styles.originalTweetName}>@{selectedTweet.username}</Text>
+                </Text>
+                <Text style={styles.originalTweetContent}>{selectedTweet.content}</Text>
+              </View>
+            )}
+
+            <View style={styles.modalBody}>
+              <View style={styles.avatar}>
+                <FontAwesome name="user" size={24} color="white" />
+              </View>
+              <TextInput
+                style={styles.modalTextInput}
+                placeholder="Tweet your reply"
+                multiline
+                value={replyText}
+                onChangeText={setReplyText}
+                maxLength={280}
+                autoFocus
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Retweet Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={retweetModalVisible}
+        onRequestClose={() => setRetweetModalVisible(false)}
+      >
+        <View style={styles.menuOverlay}>
+          <TouchableOpacity 
+            style={styles.menuBackdrop} 
+            onPress={() => setRetweetModalVisible(false)}
+          />
+          <View style={styles.retweetMenuContainer}>
+            <TouchableOpacity 
+              style={styles.retweetMenuItem}
+              onPress={handleSimpleRetweet}
+            >
+              <FontAwesome5 name="retweet" size={20} color="#657786" />
+              <Text style={styles.retweetMenuText}>
+                {selectedTweet?.isRetweeted ? 'Hủy Retweet' : 'Retweet'}
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.retweetMenuItem}
+              onPress={() => {
+                setRetweetModalVisible(false);
+                setTimeout(() => setModalVisible(true), 100);
+              }}
+            >
+              <FontAwesome5 name="edit" size={20} color="#657786" />
+              <Text style={styles.retweetMenuText}>Quote Tweet</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Share Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={shareModalVisible}
+        onRequestClose={() => setShareModalVisible(false)}
+      >
+        <View style={styles.menuOverlay}>
+          <TouchableOpacity 
+            style={styles.menuBackdrop} 
+            onPress={() => setShareModalVisible(false)}
+          />
+          <View style={styles.shareMenuContainer}>
+            <TouchableOpacity 
+              style={styles.shareMenuItem}
+              onPress={() => handleShareAction('message')}
+            >
+              <FontAwesome5 name="envelope" size={20} color="#657786" />
+              <Text style={styles.shareMenuText}>Gửi qua tin nhắn</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.shareMenuItem}
+              onPress={() => handleShareAction('copy')}
+            >
+              <FontAwesome5 name="link" size={20} color="#657786" />
+              <Text style={styles.shareMenuText}>Sao chép liên kết</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.shareMenuItem}
+              onPress={() => handleShareAction('bookmark')}
+            >
+              <FontAwesome 
+                name={selectedTweet?.isBookmarked ? "bookmark" : "bookmark-o"} 
+                size={20} 
+                color="#657786" 
+              />
+              <Text style={styles.shareMenuText}>
+                {selectedTweet?.isBookmarked ? 'Bỏ bookmark' : 'Bookmark'}
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.shareMenuItem}
+              onPress={() => handleShareAction('email')}
+            >
+              <FontAwesome5 name="at" size={20} color="#657786" />
+              <Text style={styles.shareMenuText}>Chia sẻ qua Email</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -407,9 +649,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f7f9fa', paddingTop: 40 },
   flatList: { flex: 1 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: 'white' },
   avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#1DA1F2', justifyContent: 'center', alignItems: 'center' },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#1DA1F2' },
   tabs: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#e1e8ed', backgroundColor: 'white' },
   tab: { flex: 1, padding: 16, alignItems: 'center' },
   activeTab: { borderBottomWidth: 3, borderBottomColor: '#1DA1F2' },
@@ -455,59 +695,41 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   tweetText: { marginVertical: 8, fontSize: 16 },
-  tweetActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  action: { flexDirection: 'row', alignItems: 'center' },
-  actionText: { marginLeft: 4, fontSize: 14, color: 'gray' },
-  trending: { padding: 16, backgroundColor: '#f7f9fa' },
-  trendingTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
-  trend: { paddingVertical: 8 },
-  trendTweets: { fontSize: 14, color: '#657786' },
-  trendTitle: { fontSize: 16, fontWeight: 'bold' },
-  fab: { position: 'absolute', bottom: 80, right: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#1DA1F2', justifyContent: 'center', alignItems: 'center', elevation: 5 },
-  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', padding: 16, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#e1e8ed' },
-
-  // Menu styles
-  menuOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuBackdrop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  menuContainer: {
-    backgroundColor: 'white',
+  quotedTweet: {
+    borderWidth: 1,
+    borderColor: '#e1e8ed',
     borderRadius: 12,
-    padding: 8,
-    marginHorizontal: 40,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    padding: 12,
+    marginVertical: 8,
+    backgroundColor: '#f7f9fa'
   },
-  menuItem: {
-    flexDirection: 'row',
+  quotedTweetHeader: {
+    fontSize: 14,
+    color: '#657786',
+    marginBottom: 4
+  },
+  quotedTweetName: {
+    fontWeight: 'bold',
+    color: '#000'
+  },
+  quotedTweetText: {
+    fontSize: 14,
+    color: '#000'
+  },
+  tweetActions: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: 8,
+    paddingRight: 20
+  },
+  action: { 
+    flexDirection: 'row', 
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    padding: 8,
+    borderRadius: 20
   },
-  menuItemText: {
-    fontSize: 16,
-    color: '#000',
-    marginLeft: 12,
-  },
-  menuSeparator: {
-    height: 1,
-    backgroundColor: '#e1e8ed',
-    marginVertical: 4,
-  },
-
+  actionText: { marginLeft: 4, fontSize: 14, color: '#657786' },
+  
   // Empty state styles
   emptyListContainer: { flexGrow: 1 },
   emptyContainer: {
@@ -544,6 +766,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold'
   },
+  fab: { position: 'absolute', bottom: 80, right: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#1DA1F2', justifyContent: 'center', alignItems: 'center', elevation: 5 },
 
   // Modal styles
   modalOverlay: {
@@ -604,6 +827,84 @@ const styles = StyleSheet.create({
   },
   characterCounter: {
     fontSize: 14,
+  },
+  originalTweet: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e1e8ed',
+    backgroundColor: '#f7f9fa'
+  },
+  originalTweetHeader: {
+    fontSize: 14,
+    color: '#657786',
+    marginBottom: 4
+  },
+  originalTweetName: {
+    fontWeight: 'bold',
+    color: '#1DA1F2'
+  },
+  originalTweetContent: {
+    fontSize: 16,
+    color: '#000'
+  },
+
+  // Menu overlay styles
+  menuOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  retweetMenuContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 8,
+    marginHorizontal: 40,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  retweetMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  retweetMenuText: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 12,
+  },
+  shareMenuContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 8,
+    marginHorizontal: 40,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  shareMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  shareMenuText: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 12,
   },
 });
 
