@@ -1,12 +1,14 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
-import EventsScreen from '../screens/EventsScreen';
+import Notification from '../screens/NotificationScreen';
 import SearchScreen from '../screens/SearchScreen';
 import WalletScreen from '../screens/WalletScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
+
+
 
 const MainTabNavigator = () => {
   return (
@@ -20,8 +22,8 @@ const MainTabNavigator = () => {
             case 'Home':
               iconName = 'home-outline';
               break;
-            case 'Events':
-              iconName = 'calendar-outline';
+            case 'Notification':
+              iconName = 'notifications-outline';
               break;
             case 'Search':
               iconName = 'search-outline';
@@ -38,7 +40,7 @@ const MainTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventsScreen} />
+      <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Wallet" component={WalletScreen} />
     </Tab.Navigator>
