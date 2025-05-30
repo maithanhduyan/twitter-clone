@@ -197,6 +197,7 @@ Dưới đây là mô tả chi tiết **UI/UX của từng màn hình chính tro
 
 Màu sắc chủ đạo: Xanh nước biển, nền trắng, chữ đen
 
+## Màn hình HomeScreen
 ### Tính năng chính của Floating Action Button:
 1. Mở Modal tạo tweet
 Khi nhấn FAB, sẽ mở modal để tạo tweet mới
@@ -220,3 +221,110 @@ Nút Tweet disabled khi chưa có nội dung
 Auto focus vào TextInput khi mở modal
 Có thể đóng modal bằng nút Hủy
 Tweet mới sẽ xuất hiện ở đầu danh sách với tên "You" và thời gian "now".
+
+### Three-dot menu icon
+Trong ảnh bạn cung cấp, biểu tượng dấu **(...)** (ba chấm dọc) nằm ở góc trên bên phải của mỗi bài đăng trên Twitter (X) có chức năng **mở menu tùy chọn** cho bài đăng đó.
+
+Khi bạn nhấn vào dấu **(...)**, một menu ngữ cảnh sẽ hiện ra với các tùy chọn như:
+
+* **Follow/Unfollow** người đăng bài.
+* **Not interested in this post** (Không quan tâm bài viết này).
+* **Mute** (Tắt tiếng người đăng bài).
+* **Block** người đăng bài.
+* **Report post** (Báo cáo bài viết).
+* **Embed Tweet** (Nhúng tweet vào website).
+* **Copy link to Tweet** (Sao chép liên kết đến bài viết).
+
+Tùy chọn cụ thể có thể thay đổi tùy vào ngữ cảnh (ví dụ: bạn có đang theo dõi người đó không, bạn có là chủ bài đăng không, v.v.).
+
+### Bài đăng (Post)
+Dưới mỗi bài đăng (tweet) trên Twitter (X), bạn sẽ thấy một hàng các biểu tượng (icon) đại diện cho các chức năng tương tác. Trong ảnh bạn gửi, từ trái sang phải, các icon lần lượt là:
+
+---
+
+1. 🗨️ **Reply (Trả lời)**
+
+* **Chức năng**: Trả lời bài đăng công khai.
+* **Khi nhấp vào**: Mở khung nhập bình luận để bạn viết phản hồi.
+
+---
+
+2. 🔁 **Retweet (Chia sẻ lại)**
+
+* **Chức năng**:
+
+  * **Retweet**: Chia sẻ lại nguyên văn bài đăng lên trang cá nhân.
+  * **Quote Tweet**: Chia sẻ lại kèm thêm ý kiến cá nhân.
+* **Khi nhấp vào**: Hiện menu chọn kiểu chia sẻ lại.
+
+---
+
+3. ❤️ **Like (Thích)**
+
+* **Chức năng**: Thể hiện bạn yêu thích bài viết.
+* **Khi nhấp vào**: Tim sẽ chuyển sang màu đỏ, số lượng Like tăng lên.
+
+---
+
+4. 📊 **View Count (Lượt xem)**
+
+* **Chức năng**: Hiển thị số lần bài đăng đã được xem.
+* **Không thể nhấp**: Đây là thông tin tĩnh, không có chức năng tương tác.
+
+---
+
+5. 🔗 **Share (Chia sẻ)**
+
+* **Chức năng**: Mở menu chia sẻ bài đăng với các tùy chọn:
+
+  * Gửi qua tin nhắn trên X.
+  * Sao chép liên kết.
+  * Chia sẻ ngoài nền tảng (email, mạng xã hội khác).
+  * Bookmark (lưu bài viết).
+
+
+### Thanh Điều Hướng: `For you`, `Following`
+Trên Twitter (nay gọi là **X**), thanh điều hướng đầu trang có hai tab chính:
+
+---
+
+### 1. **For you** (Dành cho bạn)
+
+* ✅ **Nội dung hiển thị**:
+  Dòng thời gian được **thuật toán đề xuất**, gồm:
+
+  * Bài đăng từ người bạn *không theo dõi* nhưng có liên quan đến sở thích, tương tác, xu hướng...
+  * Các bài được người bạn theo dõi thích, bình luận, chia sẻ...
+  * Nội dung đang "hot" hoặc viral.
+
+* 🔍 **Mục tiêu**:
+  Giúp bạn khám phá thêm nội dung mới ngoài những tài khoản bạn theo dõi.
+
+* 📌 **Tính năng đặc biệt**:
+  Nội dung được sắp xếp không theo thứ tự thời gian, mà theo mức độ liên quan.
+
+---
+
+### 2. **Following** (Đang theo dõi)
+
+* ✅ **Nội dung hiển thị**:
+  Chỉ hiển thị bài đăng từ những tài khoản **bạn đang theo dõi**.
+
+* 📆 **Thứ tự hiển thị**:
+  Theo **thời gian thực** (gần đây nhất ở trên cùng).
+
+* 📌 **Mục tiêu**:
+  Giúp bạn theo dõi sát sao nội dung của những người bạn quan tâm.
+
+---
+
+### 📝 Tóm lại:
+
+| Tab           | Nội dung               | Sắp xếp        | Gợi ý người lạ |
+| ------------- | ---------------------- | -------------- | -------------- |
+| **For you**   | Gợi ý từ thuật toán    | Theo liên quan | Có             |
+| **Following** | Tài khoản bạn theo dõi | Theo thời gian | Không          |
+
+
+
+

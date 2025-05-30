@@ -37,6 +37,7 @@ const HomeScreen = () => {
   const [newTweetText, setNewTweetText] = useState('');
   const [tweetList, setTweetList] = useState(tweets);
   const [activeTab, setActiveTab] = useState('forYou'); // 'forYou' or 'following'
+  const [menuVisible, setMenuVisible] = useState(null); // Track which menu is open
 
   const handleCreateTweet = () => {
     if (newTweetText.trim().length === 0) {
@@ -76,6 +77,131 @@ const HomeScreen = () => {
     return tweetList;
   };
 
+  const handleMenuPress = (tweetId) => {
+    setMenuVisible(menuVisible === tweetId ? null : tweetId);
+  };
+
+  const handleFollowToggle = (tweetId) => {
+    setTweetList(prevTweets => 
+      prevTweets.map(tweet => 
+        tweet.id === tweetId 
+          ? { ...tweet, isFollowed: !tweet.isFollowed }
+          : tweet
+      )
+    );
+    setMenuVisible(null);
+    
+    const tweet = tweetList.find(t => t.id === tweetId);
+    Alert.alert(
+      'Thành công', 
+      tweet?.isFollowed ? `Đã bỏ theo dõi ${tweet.name}` : `Đã theo dõi ${tweet.name}`
+    );
+  };
+
+  const handleMenuAction = (action, tweet) => {
+    setMenuVisible(null);
+    
+    switch (action) {
+      case 'follow':
+        handleFollowToggle(tweet.id);
+        break;
+      case 'notInterested':
+        Alert.alert('Thông báo', 'Đã đánh dấu không quan tâm bài viết này');
+        break;
+      case 'mute':
+        Alert.alert('Thông báo', `Đã tắt tiếng ${tweet.name}`);
+        break;
+      case 'block':
+        Alert.alert('Thông báo', `Đã chặn ${tweet.name}`);
+        break;
+      case 'report':
+        Alert.alert('Thông báo', 'Đã báo cáo bài viết');
+        break;
+      case 'copyLink':
+        Alert.alert('Thông báo', 'Đã sao chép liên kết');
+        break;
+      case 'embed':
+        Alert.alert('Thông báo', 'Đã sao chép mã nhúng');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const renderTweetMenu = (tweet) => (
+    <View style={styles.menuOverlay}>
+      <TouchableOpacity 
+        style={styles.menuBackdrop} 
+        onPress={() => setMenuVisible(null)}
+      />
+      <View style={styles.menuContainer}>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('follow', tweet)}
+        >
+          <FontAwesome 
+            name={tweet.isFollowed ? "user-minus" : "user-plus"} 
+            size={16} 
+            color="#657786" 
+          />
+          <Text style={styles.menuItemText}>
+            {tweet.isFollowed ? `Bỏ theo dõi @${tweet.username}` : `Theo dõi @${tweet.username}`}
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('notInterested', tweet)}
+        >
+          <FontAwesome name="eye-slash" size={16} color="#657786" />
+          <Text style={styles.menuItemText}>Không quan tâm bài viết này</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('mute', tweet)}
+        >
+          <FontAwesome name="volume-off" size={16} color="#657786" />
+          <Text style={styles.menuItemText}>Tắt tiếng @{tweet.username}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('block', tweet)}
+        >
+          <FontAwesome name="ban" size={16} color="#e74c3c" />
+          <Text style={[styles.menuItemText, { color: '#e74c3c' }]}>Chặn @{tweet.username}</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.menuSeparator} />
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('report', tweet)}
+        >
+          <FontAwesome name="flag" size={16} color="#e74c3c" />
+          <Text style={[styles.menuItemText, { color: '#e74c3c' }]}>Báo cáo bài viết</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('copyLink', tweet)}
+        >
+          <FontAwesome name="link" size={16} color="#657786" />
+          <Text style={styles.menuItemText}>Sao chép liên kết</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => handleMenuAction('embed', tweet)}
+        >
+          <FontAwesome name="code" size={16} color="#657786" />
+          <Text style={styles.menuItemText}>Nhúng Tweet</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   const renderTweet = ({ item }) => (
     <View style={styles.tweet}>
       <View style={styles.avatar}>
@@ -83,15 +209,25 @@ const HomeScreen = () => {
       </View>
       <View style={styles.tweetContent}>
         <View style={styles.tweetHeaderRow}>
-          <Text style={styles.tweetHeader}>
-            <Text style={styles.tweetName}>{item.name}</Text> @{item.username} · {item.time}
-          </Text>
-          {item.isFollowed && activeTab === 'forYou' && (
-            <View style={styles.followingBadge}>
-              <FontAwesome name="check" size={10} color="#1DA1F2" />
-              <Text style={styles.followingBadgeText}>Following</Text>
-            </View>
-          )}
+          <View style={styles.tweetHeaderLeft}>
+            <Text style={styles.tweetHeader}>
+              <Text style={styles.tweetName}>{item.name}</Text> @{item.username} · {item.time}
+            </Text>
+            {item.isFollowed && activeTab === 'forYou' && (
+              <View style={styles.followingBadge}>
+                <FontAwesome name="check" size={10} color="#1DA1F2" />
+                <Text style={styles.followingBadgeText}>Following</Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.tweetHeaderRight}>
+            <TouchableOpacity 
+              style={styles.menuButton}
+              onPress={() => handleMenuPress(item.id)}
+            >
+              <FontAwesome name="ellipsis-h" size={16} color="#657786" />
+            </TouchableOpacity>
+          </View>
         </View>
         <Text style={styles.tweetText}>{item.content}</Text>
         <View style={styles.tweetActions}>
@@ -109,6 +245,18 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+      
+      {/* Menu Modal */}
+      {menuVisible === item.id && (
+        <Modal
+          transparent={true}
+          visible={true}
+          animationType="fade"
+          onRequestClose={() => setMenuVisible(null)}
+        >
+          {renderTweetMenu(item)}
+        </Modal>
+      )}
     </View>
   );
 
@@ -271,7 +419,20 @@ const styles = StyleSheet.create({
   tweetInput: { flex: 1, fontSize: 16, paddingHorizontal: 8 },
   tweet: { flexDirection: 'row', padding: 16, borderBottomWidth: 1, borderBottomColor: '#e1e8ed', backgroundColor: 'white' },
   tweetContent: { flex: 1, marginLeft: 12 },
-  tweetHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  tweetHeaderRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'flex-start'
+  },
+  tweetHeaderLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  tweetHeaderRight: {
+    marginLeft: 8
+  },
   tweetHeader: { fontSize: 14, color: '#657786', flex: 1 },
   tweetName: { fontWeight: 'bold', color: '#000' },
   followingBadge: { 
@@ -289,6 +450,10 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     fontWeight: '500'
   },
+  menuButton: {
+    padding: 8,
+    borderRadius: 20,
+  },
   tweetText: { marginVertical: 8, fontSize: 16 },
   tweetActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
   action: { flexDirection: 'row', alignItems: 'center' },
@@ -300,6 +465,48 @@ const styles = StyleSheet.create({
   trendTitle: { fontSize: 16, fontWeight: 'bold' },
   fab: { position: 'absolute', bottom: 80, right: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#1DA1F2', justifyContent: 'center', alignItems: 'center', elevation: 5 },
   bottomNav: { flexDirection: 'row', justifyContent: 'space-around', padding: 16, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#e1e8ed' },
+
+  // Menu styles
+  menuOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  menuContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 8,
+    marginHorizontal: 40,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  menuItemText: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 12,
+  },
+  menuSeparator: {
+    height: 1,
+    backgroundColor: '#e1e8ed',
+    marginVertical: 4,
+  },
 
   // Empty state styles
   emptyListContainer: { flexGrow: 1 },

@@ -35,6 +35,8 @@ const CustomDrawerContent = (props: any) => {
       iconType: 'FontAwesome',
       onPress: () => props.navigation.navigate('Community') 
     },
+    // Chưa có Bookmarks 
+    // Chưa có Lists
     { 
       label: 'Settings & Privacy', 
       icon: 'cog', 
