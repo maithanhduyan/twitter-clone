@@ -197,3 +197,26 @@ Dưới đây là mô tả chi tiết **UI/UX của từng màn hình chính tro
 
 Màu sắc chủ đạo: Xanh nước biển, nền trắng, chữ đen
 
+### Tính năng chính của Floating Action Button:
+1. Mở Modal tạo tweet
+Khi nhấn FAB, sẽ mở modal để tạo tweet mới
+Modal có animation slide từ dưới lên
+2. Modal tạo tweet bao gồm:
+Header: Nút Hủy, tiêu đề "Tạo Tweet", nút Tweet
+Body: Avatar và TextInput để nhập nội dung
+Footer: Bộ đếm ký tự (280 ký tự tối đa)
+3. Validation:
+Kiểm tra nội dung không được rỗng
+Giới hạn 280 ký tự
+Nút Tweet chỉ active khi có nội dung
+4. Chức năng:
+Tạo tweet mới với timestamp "now"
+Thêm tweet vào đầu danh sách
+Hiển thị thông báo thành công
+Reset form và đóng modal
+5. UX/UI:
+Character counter đổi màu đỏ khi gần giới hạn
+Nút Tweet disabled khi chưa có nội dung
+Auto focus vào TextInput khi mở modal
+Có thể đóng modal bằng nút Hủy
+Tweet mới sẽ xuất hiện ở đầu danh sách với tên "You" và thời gian "now".

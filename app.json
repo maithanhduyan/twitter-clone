@@ -5,7 +5,7 @@
     "slug": "twitter-clone",
     "owner": "your-username",
     "privacy": "public",
-    "sdkVersion": "48.0.0",
+    "sdkVersion": "53.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",

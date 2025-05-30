@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
-import DatePicker from 'react-native-date-picker'; // Import DatePicker
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Platform, SafeAreaView } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import globalStyles from '../globalStyles';
@@ -12,97 +12,100 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState('');
   const [usePhone, setUsePhone] = useState(false);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false); // State to control DatePicker
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleRegister = () => {
-    if (!username || (!email && !usePhone) || !dob) {
-      alert('Please fill in all fields');
-      return;
-    }
-    // Handle registration logic here
+    // if (!username || (!email && !usePhone) || !dob) {
+    //   alert('Please fill in all fields');
+    //   return;
+    // }
+    
+    // Giả lập đăng ký thành công
+    alert('Registration successful!');
+    
+    // Chuyển đến màn hình Home thay vì Main
     navigation.replace('Main');
   };
 
-  const handleDateConfirm = (date: Date) => {
-    setSelectedDate(date);
-    setDob(date.toISOString().split('T')[0]); // Format date as yyyy-mm-dd
-    setIsDatePickerOpen(false);
+  const handleDateConfirm = (event: any, date?: Date) => {
+    setIsDatePickerOpen(Platform.OS === 'ios');
+    if (date) {
+      setSelectedDate(date);
+      setDob(date.toISOString().split('T')[0]);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Logo */}
-      <Image
-        source={require('../assets/twitter.svg')}
-        style={globalStyles.logo}
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Logo */}
+        <Image
+          source={require('../assets/twitter.png')}
+          style={globalStyles.logo}
+        />
 
-      <Text style={styles.title}>Create your account</Text>
+        <Text style={styles.title}>Create your account</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder={usePhone ? 'Phone' : 'Email'}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType={usePhone ? 'phone-pad' : 'email-address'}
-      />
-      <TouchableOpacity onPress={() => setUsePhone(!usePhone)}>
-        <Text style={styles.toggleText}>
-          {usePhone ? 'Use email instead' : 'Use phone instead'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Date of Birth Input */}
-      <TouchableOpacity onPress={() => setIsDatePickerOpen(true)}>
         <TextInput
           style={styles.input}
-          placeholder="Date of birth (yyyy-mm-dd)"
-          value={dob}
-          editable={false} // Prevent manual editing
+          placeholder="Name"
+          value={username}
+          onChangeText={setUsername}
         />
-      </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder={usePhone ? 'Phone' : 'Email'}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType={usePhone ? 'phone-pad' : 'email-address'}
+        />
+        <TouchableOpacity onPress={() => setUsePhone(!usePhone)}>
+          <Text style={styles.toggleText}>
+            {usePhone ? 'Use email instead' : 'Use phone instead'}
+          </Text>
+        </TouchableOpacity>
 
-      {/* Date Picker Modal */}
-      <Modal visible={isDatePickerOpen} transparent={true} animationType="slide">
-        <View style={styles.modalContainer}>
-          <DatePicker
-            date={selectedDate}
-            mode="date"
-            onDateChange={setSelectedDate}
-            onConfirm={() => handleDateConfirm(selectedDate)} // Call handleDateConfirm
-            onCancel={() => setIsDatePickerOpen(false)}
+        {/* Date of Birth Input */}
+        <TouchableOpacity onPress={() => setIsDatePickerOpen(true)}>
+          <TextInput
+            style={styles.input}
+            placeholder="Date of birth (yyyy-mm-dd)"
+            value={dob}
+            editable={false} // Prevent manual editing
           />
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setIsDatePickerOpen(false)}
-          >
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>Next</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Date Picker */}
+        {isDatePickerOpen && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={handleDateConfirm}
+          />
+        )}
+
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <Text style={styles.registerButtonText}>Next</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    paddingTop: 60, 
   },
   title: {
     fontSize: 28,
@@ -123,6 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1DA1F2',
     textAlign: 'right',
+    marginRight: 10,
     marginBottom: 15,
   },
   registerButton: {
@@ -135,22 +139,6 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  closeButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#1DA1F2',
-    borderRadius: 5,
-  },
-  closeButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },

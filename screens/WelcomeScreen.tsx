@@ -1,71 +1,77 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import globalStyles from '../globalStyles'; // Import global styles
 
 const WelcomeScreen: React.FC = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      {/* Logo */}
-      <Image
-        source={require('../assets/twitter.svg')}
-        style={globalStyles.logo} // Use global style
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Logo */}
+        <Image
+          source={require('../assets/twitter.png')}
+          style={globalStyles.logo} // Use global style
+        />
 
-      {/* Title */}
-      <Text style={styles.title}>Happening now</Text>
-      <Text style={styles.subtitle}>Join today.</Text>
+        {/* Title */}
+        <Text style={styles.title}>Happening now</Text>
+        <Text style={styles.subtitle}>Join today.</Text>
 
-      {/* Buttons */}
-      <TouchableOpacity style={styles.googleButton}>
-        <Text style={styles.buttonText}>Sign up with Google</Text>
-      </TouchableOpacity>
+        {/* Buttons */}
+        <TouchableOpacity style={styles.googleButton}>
+          <Text style={styles.buttonText}>Sign up with Google</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.appleButton}>
-        <Text style={styles.buttonText}>Sign up with Apple</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.appleButton}>
+          <Text style={styles.buttonText}>Sign up with Apple</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.orText}>OR</Text>
+        <Text style={styles.orText}>OR</Text>
 
-      <TouchableOpacity
-        style={styles.createAccountButton}
-        onPress={() => navigation.navigate('Register')}
-      >
-        <Text style={styles.createAccountText}>Create account</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.createAccountButton}
+          onPress={() => navigation.navigate('Register')}
+        >
+          <Text style={styles.createAccountText}>Create account</Text>
+        </TouchableOpacity>
 
-      {/* Terms */}
-      <Text style={styles.termsText}>
-        By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie Use.
-      </Text>
+        {/* Terms */}
+        <Text style={styles.termsText}>
+          By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie Use.
+        </Text>
 
-      {/* Sign In */}
-      <Text style={styles.signInText}>
-        Already have an account?
-      </Text>
-      <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.signInText}>Sign in</Text>
-      </TouchableOpacity>
+        {/* Sign In */}
+        <Text style={styles.signInText}>
+          Already have an account?
+        </Text>
+        <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.signInText}>Sign in</Text>
+        </TouchableOpacity>
 
-      {/* Footer */}
-      <Text style={styles.termsText}>
-        This is a private computer system. Unauthorized access is prohibited.
-        All activity is monitored and recorded. By using this system, you consent to such monitoring and recording.
-      </Text>
-      <Text style={styles.termsText}>
-        Twitter Clone, Inc. © 2025
-      </Text>
-    </View>
+        {/* Footer */}
+        <Text style={styles.termsText}>
+          This is a private computer system. Unauthorized access is prohibited.
+          All activity is monitored and recorded. By using this system, you consent to such monitoring and recording.
+        </Text>
+        <Text style={styles.copyRightText}>
+          Twitter Clone, Inc. © 2025
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default WelcomeScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    paddingTop: 40, // Thêm padding top để tạo khoảng cách
   },
   title: {
     fontSize: 28,
@@ -138,5 +144,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     marginTop: 10,
+  },
+  copyRightText: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 0,
   },
 });
