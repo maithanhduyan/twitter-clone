@@ -33,7 +33,7 @@ const CustomDrawerContent = (props: any) => {
       label: 'Cộng đồng', 
       icon: 'users', 
       iconType: 'FontAwesome',
-      onPress: () => props.navigation.navigate('Community') 
+      onPress: () => props.navigation.navigate('Communities') 
     },
     // Chưa có Bookmarks 
     // Chưa có Lists
