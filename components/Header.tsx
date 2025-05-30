@@ -34,7 +34,13 @@ const Header = () => {
           style={styles.avatar}
         />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>Twitter Clone</Text>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/twitter.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       <FontAwesome name="cog" size={24} color="gray" />
     </View>
   );
@@ -45,5 +51,7 @@ export default Header;
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: 'white' },
   avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#1DA1F2', justifyContent: 'center', alignItems: 'center' },
+  logoContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  logo: { width: 30, height: 30 },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#1DA1F2' },
 });

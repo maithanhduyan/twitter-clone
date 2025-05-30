@@ -8,13 +8,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
 
-
-
 const MainTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarShowLabel: false, // Loại bỏ nhãn dưới biểu tượng
         tabBarIcon: ({ color, size }) => {
           let iconName: string = '';
 
@@ -35,7 +34,7 @@ const MainTabNavigator = () => {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#007AFF',
+        tabBarActiveTintColor: '#1DA1F2',
         tabBarInactiveTintColor: 'gray',
       })}
     >
