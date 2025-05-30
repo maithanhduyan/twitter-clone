@@ -441,6 +441,15 @@ Bạn có thể sử dụng tính năng tìm kiếm để:
 * Lọc kết quả theo tab: **Top, Latest, People, Photos, Videos** (sẽ hiển thị sau khi bạn bắt đầu tìm kiếm).
 
 ---
+### Contexts
 
+Lợi ích của việc sử dụng AuthContext:
+
+- Centralized state management: Quản lý trạng thái đăng nhập tập trung
+- Global access: Có thể access thông tin user từ bất kỳ component nào
+- Automatic persistence: Tự động lưu/load token từ AsyncStorage
+- Type safety: TypeScript support đầy đủ
+- Reusability: Có thể sử dụng lại logic auth ở nhiều nơi
+- Clean separation: Tách biệt logic auth khỏi UI components
 
 
