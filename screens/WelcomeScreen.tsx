@@ -1,15 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
-import globalStyles from '../globalStyles'; // Import global styles
 
-const WelcomeScreen: React.FC = ({ navigation }) => {
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+type WelcomeScreenProps = NativeStackScreenProps<any, any>;
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {/* Logo */}
         <Image
           source={require('../assets/twitter.png')}
-          style={globalStyles.logo} // Use global style
+          style={styles.logo} // Use global style
         />
 
         {/* Title */}
@@ -63,6 +66,12 @@ const WelcomeScreen: React.FC = ({ navigation }) => {
 export default WelcomeScreen;
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: 30,
+    resizeMode: 'contain',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',

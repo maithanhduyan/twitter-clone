@@ -13,8 +13,42 @@ import {
 } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
+interface Trend {
+  id: string;
+  title: string;
+  category: string;
+  tweets: string;
+  isPromoted: boolean;
+}
+
+interface User {
+  id: string;
+  name: string;
+  username: string;
+  followers: string;
+  verified: boolean;
+  bio: string;
+}
+
+interface Tweet {
+  id: string;
+  name: string;
+  username: string;
+  content: string;
+  likes: number;
+  retweets: number;
+  verified: boolean;
+  time: string;
+}
+
+interface Location {
+  id: string;
+  name: string;
+  country: string;
+}
+
 // Sample trending data
-const trendsData = [
+const trendsData: Trend[] = [
   { id: '1', title: '#TechNews', category: 'Technology', tweets: '125K Tweets', isPromoted: false },
   { id: '2', title: 'Artificial Intelligence', category: 'Technology', tweets: '89.5K Tweets', isPromoted: false },
   { id: '3', title: '#MachineLearning', category: 'Programming', tweets: '67.2K Tweets', isPromoted: false },
@@ -26,16 +60,24 @@ const trendsData = [
 ];
 
 // Sample search results data
-const searchResultsData = {
+const searchResultsData: {
+  users: User[];
+  tweets: Tweet[];
+  locations: Location[];
+} = {
   users: [
     { id: '1', name: 'Elon Musk', username: 'elonmusk', followers: '100M', verified: true, bio: 'CEO of Tesla and SpaceX' },
     { id: '2', name: 'Bill Gates', username: 'BillGates', followers: '60M', verified: true, bio: 'Co-chair of the Bill & Melinda Gates Foundation' },
     { id: '3', name: 'Tim Cook', username: 'tim_cook', followers: '15M', verified: true, bio: 'CEO of Apple' },
-  ],
-  tweets: [
+  ],  tweets: [
     { id: '1', name: 'OpenAI', username: 'OpenAI', content: 'Introducing GPT-4: our most capable and aligned model yet', time: '2h', likes: 15420, retweets: 8900, verified: true },
     { id: '2', name: 'Google', username: 'Google', content: 'Machine learning is transforming how we understand and interact with information', time: '4h', likes: 9876, retweets: 4321, verified: true },
     { id: '3', name: 'Microsoft', username: 'Microsoft', content: 'Azure AI services now support 100+ languages for global accessibility', time: '6h', likes: 6543, retweets: 2109, verified: true },
+  ],
+  locations: [
+    { id: '1', name: 'Worldwide', country: 'Global' },
+    { id: '2', name: 'Vietnam', country: 'Vietnam' },
+    { id: '3', name: 'United States', country: 'United States' },
   ]
 };
 
@@ -60,7 +102,7 @@ const SearchScreen = () => {
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [searchResults, setSearchResults] = useState(searchResultsData);
 
-  const handleSearch = (text) => {
+  const handleSearch = (text: string): void => {
     setSearchText(text);
     if (text.trim().length > 0) {
       setIsSearching(true);
@@ -78,8 +120,7 @@ const SearchScreen = () => {
     setSearchText('');
     setIsSearching(false);
   };
-
-  const handleLocationChange = (location) => {
+  const handleLocationChange = (location: Location): void => {
     setSelectedLocation(location.name);
     setLocationModalVisible(false);
     
@@ -91,7 +132,7 @@ const SearchScreen = () => {
     );
   };
 
-  const renderTrendItem = ({ item }) => (
+  const renderTrendItem = ({ item }: { item: Trend }) => (
     <TouchableOpacity style={styles.trendItem}>
       <View style={styles.trendContent}>
         <Text style={styles.trendCategory}>{item.category} • Trending</Text>
@@ -104,7 +145,7 @@ const SearchScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderUserResult = ({ item }) => (
+  const renderUserResult = ({ item }: { item: User }) => (
     <TouchableOpacity style={styles.userResult}>
       <View style={styles.userAvatar}>
         <FontAwesome name="user" size={24} color="white" />
@@ -126,7 +167,7 @@ const SearchScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderTweetResult = ({ item }) => (
+  const renderTweetResult = ({ item }: { item: Tweet }) => (
     <TouchableOpacity style={styles.tweetResult}>
       <View style={styles.userAvatar}>
         <FontAwesome name="user" size={24} color="white" />
@@ -154,7 +195,7 @@ const SearchScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderLocationItem = ({ item }) => (
+  const renderLocationItem = ({ item }: { item: Location }) => (
     <TouchableOpacity 
       style={[styles.locationItem, selectedLocation === item.name && styles.selectedLocationItem]}
       onPress={() => handleLocationChange(item)}
@@ -641,13 +682,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#e1e8ed',
-  },
-  selectedLocationItem: {
+  },  selectedLocationItem: {
     backgroundColor: '#f0f8ff',
-  },
-  locationText: {
-    fontSize: 16,
-    color: '#000',
   },
   selectedLocationText: {
     color: '#1DA1F2',

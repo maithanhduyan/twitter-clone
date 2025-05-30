@@ -6,7 +6,35 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import Header from '../components/Header';
 import TweetMenu from '../components/TweetMenu';
 
-const tweets = [
+// Define interfaces
+interface Tweet {
+  id: string;
+  name: string;
+  username: string;
+  content: string;
+  time: string;
+  likes: number;
+  retweets: number;
+  comments: number;
+  views: number;
+  isFollowed: boolean;
+  isLiked: boolean;
+  isRetweeted: boolean;
+  isBookmarked: boolean;
+  quotedTweet?: {
+    name: string;
+    username: string;
+    content: string;
+  };
+}
+
+interface Trend {
+  id: string;
+  title: string;
+  tweets: string;
+}
+
+const tweets: Tweet[] = [
   { id: '1', name: 'Elon Musk', username: 'elonmusk', content: 'Coding is magic.', time: '2h', likes: 4523, retweets: 1203, comments: 432, views: 125000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: '2', name: 'Bill Gates', username: 'BillGates', content: 'AI must be developed responsibly.', time: '5h', likes: 7892, retweets: 2341, comments: 876, views: 198000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: '3', name: 'Tim Cook', username: 'tim_cook', content: 'Innovation is in our DNA.', time: '8h', likes: 3421, retweets: 892, comments: 234, views: 87000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
@@ -15,7 +43,7 @@ const tweets = [
 ];
 
 // Sample new tweets for refresh simulation
-const newTweetsData = [
+const newTweetsData: Tweet[] = [
   { id: 'new1', name: 'OpenAI', username: 'OpenAI', content: 'GPT-4 is now available to everyone!', time: 'now', likes: 12000, retweets: 3500, comments: 890, views: 250000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: 'new2', name: 'Meta', username: 'Meta', content: 'Introducing the next generation of VR technology.', time: '1m', likes: 8500, retweets: 2100, comments: 456, views: 180000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: 'new3', name: 'Google', username: 'Google', content: 'Machine learning is transforming how we search.', time: '5m', likes: 6700, retweets: 1800, comments: 320, views: 150000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
@@ -23,7 +51,7 @@ const newTweetsData = [
   { id: 'new5', name: 'Tesla', username: 'Tesla', content: 'Full self-driving update rolling out globally.', time: '15m', likes: 15000, retweets: 4500, comments: 1200, views: 300000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
 ];
 
-const trends = [
+const trends: Trend[] = [
   { id: '1', title: '#TechNews', tweets: '125K Tweets' },
   { id: '2', title: 'Artificial Intelligence', tweets: 'Trending in Technology' },
   { id: '3', title: '#MachineLearning', tweets: '89K Tweets' },
@@ -39,15 +67,13 @@ const HomeScreen = () => {
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [newTweetText, setNewTweetText] = useState('');
   const [replyText, setReplyText] = useState('');
-  const [quoteText, setQuoteText] = useState('');
-  const [tweetList, setTweetList] = useState(tweets);
-  const [activeTab, setActiveTab] = useState('forYou');
-  const [menuVisible, setMenuVisible] = useState(null);
-  const [selectedTweet, setSelectedTweet] = useState(null);
+  const [quoteText, setQuoteText] = useState('');  const [tweetList, setTweetList] = useState<Tweet[]>(tweets);
+  const [activeTab, setActiveTab] = useState<'forYou' | 'following'>('forYou');
+  const [menuVisible, setMenuVisible] = useState<string | null>(null);
+  const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-
   // Simulate fetching new tweets
-  const fetchNewTweets = () => {
+  const fetchNewTweets = (): Promise<Tweet[]> => {
     return new Promise((resolve) => {
       // Simulate network delay
       setTimeout(() => {
@@ -128,11 +154,11 @@ const HomeScreen = () => {
     return tweetList;
   };
 
-  const handleMenuPress = (tweetId) => {
+  const handleMenuPress = (tweetId: string): void => {
     setMenuVisible(menuVisible === tweetId ? null : tweetId);
   };
 
-  const handleFollowToggle = (tweetId) => {
+  const handleFollowToggle = (tweetId: string): void => {
     setTweetList(prevTweets => 
       prevTweets.map(tweet => 
         tweet.id === tweetId 
@@ -141,15 +167,14 @@ const HomeScreen = () => {
       )
     );
     setMenuVisible(null);
-    
-    const tweet = tweetList.find(t => t.id === tweetId);
+      const tweet = tweetList.find(t => t.id === tweetId);
     Alert.alert(
       'Thành công', 
-      tweet?.isFollowed ? `Đã bỏ theo dõi ${tweet.name}` : `Đã theo dõi ${tweet.name}`
+      tweet ? (tweet.isFollowed ? `Đã bỏ theo dõi ${tweet.name}` : `Đã theo dõi ${tweet.name}`) : 'Không tìm thấy tweet'
     );
   };
 
-  const handleMenuAction = (action, tweet) => {
+  const handleMenuAction = (action: string, tweet: Tweet): void => {
     setMenuVisible(null);
     
     switch (action) {
@@ -180,14 +205,18 @@ const HomeScreen = () => {
   };
 
   // Tweet Action Handlers
-  const handleReply = (tweet) => {
+  const handleReply = (tweet: Tweet): void => {
     setSelectedTweet(tweet);
     setReplyModalVisible(true);
   };
-
-  const handleSubmitReply = () => {
+  const handleSubmitReply = (): void => {
     if (replyText.trim().length === 0) {
       Alert.alert('Lỗi', 'Vui lòng nhập nội dung phản hồi');
+      return;
+    }
+
+    if (!selectedTweet) {
+      Alert.alert('Lỗi', 'Không tìm thấy tweet để trả lời');
       return;
     }
 
@@ -205,12 +234,16 @@ const HomeScreen = () => {
     Alert.alert('Thành công', 'Đã gửi phản hồi!');
   };
 
-  const handleRetweet = (tweet) => {
+  const handleRetweet = (tweet: Tweet): void => {
     setSelectedTweet(tweet);
     setRetweetModalVisible(true);
   };
+  const handleSimpleRetweet = (): void => {
+    if (!selectedTweet) {
+      Alert.alert('Lỗi', 'Không tìm thấy tweet để retweet');
+      return;
+    }
 
-  const handleSimpleRetweet = () => {
     setTweetList(prevTweets => 
       prevTweets.map(tweet => 
         tweet.id === selectedTweet.id 
@@ -225,14 +258,18 @@ const HomeScreen = () => {
     setRetweetModalVisible(false);
     Alert.alert('Thành công', selectedTweet.isRetweeted ? 'Đã hủy retweet' : 'Đã retweet!');
   };
-
-  const handleQuoteTweet = () => {
+  const handleQuoteTweet = (): void => {
     if (quoteText.trim().length === 0) {
       Alert.alert('Lỗi', 'Vui lòng nhập nội dung quote tweet');
       return;
     }
 
-    const quoteTweet = {
+    if (!selectedTweet) {
+      Alert.alert('Lỗi', 'Không tìm thấy tweet để quote');
+      return;
+    }
+
+    const quoteTweet: Tweet = {
       id: Date.now().toString(),
       name: 'You',
       username: 'yourhandle',
@@ -246,7 +283,11 @@ const HomeScreen = () => {
       isLiked: false,
       isRetweeted: false,
       isBookmarked: false,
-      quotedTweet: selectedTweet
+      quotedTweet: {
+        name: selectedTweet.name,
+        username: selectedTweet.username,
+        content: selectedTweet.content
+      }
     };
 
     setTweetList([quoteTweet, ...tweetList]);
@@ -255,7 +296,7 @@ const HomeScreen = () => {
     Alert.alert('Thành công', 'Đã đăng quote tweet!');
   };
 
-  const handleLike = (tweet) => {
+  const handleLike = (tweet: Tweet): void => {
     setTweetList(prevTweets => 
       prevTweets.map(t => 
         t.id === tweet.id 
@@ -269,12 +310,12 @@ const HomeScreen = () => {
     );
   };
 
-  const handleShare = (tweet) => {
+  const handleShare = (tweet: any) => {
     setSelectedTweet(tweet);
     setShareModalVisible(true);
   };
 
-  const handleShareAction = (action) => {
+  const handleShareAction = (action: string) => {
     setShareModalVisible(false);
     
     switch (action) {
@@ -290,17 +331,17 @@ const HomeScreen = () => {
       case 'bookmark':
         setTweetList(prevTweets => 
           prevTweets.map(tweet => 
-            tweet.id === selectedTweet.id 
+            tweet.id === selectedTweet?.id 
               ? { ...tweet, isBookmarked: !tweet.isBookmarked }
               : tweet
           )
         );
-        Alert.alert('Thành công', selectedTweet.isBookmarked ? 'Đã bỏ bookmark' : 'Đã bookmark!');
+        Alert.alert('Thành công', selectedTweet?.isBookmarked ? 'Đã bỏ bookmark' : 'Đã bookmark!');
         break;
     }
   };
 
-  const formatNumber = (num) => {
+  const formatNumber = (num: number): string => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -309,7 +350,7 @@ const HomeScreen = () => {
     return num.toString();
   };
 
-  const renderTweet = ({ item }) => (
+  const renderTweet = ({ item }: { item: Tweet }) => (
     <View style={styles.tweet}>
       <View style={styles.avatar}>
         <FontAwesome name="user" size={24} color="white" />

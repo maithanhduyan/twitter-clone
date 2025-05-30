@@ -59,7 +59,7 @@ const mockCommunities = [
   }
 ];
 
-const mockPosts = [
+const mockPosts: Post[] = [
   {
     id: '1',
     communityId: '1',
@@ -126,6 +126,47 @@ const categories = [
   { id: 'music', name: 'Music', icon: '🎵' }
 ];
 
+// Define interfaces outside the component
+interface Community {
+  id: string;
+  name: string;
+  category: string;
+  members: number;
+  isJoined: boolean;
+  isVerified: boolean;
+  description: string;
+  avatar: string;
+}
+
+interface Post {
+  id: string;
+  communityId: string;
+  communityName: string;
+  author: string;
+  username: string;
+  isVerified: boolean;
+  content: string;
+  time: string;
+  likes: number;
+  retweets: number;
+  comments: number;
+  views: number;
+  hasImage?: boolean;
+  isLiked: boolean;
+  isRetweeted: boolean;
+  isBookmarked: boolean;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+interface MenuActionHandlerProps {
+  action: 'create' | 'joined' | 'manage';
+}
+
 const CommunitiesScreen = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [communities, setCommunities] = useState(mockCommunities);
@@ -133,7 +174,7 @@ const CommunitiesScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -143,25 +184,24 @@ const CommunitiesScreen = () => {
     }, 1500);
   };
 
-  const handleJoinCommunity = (communityId) => {
-    setCommunities(prev =>
-      prev.map(community =>
+  const handleJoinCommunity = (communityId: string): void => {
+    setCommunities((prev: Community[]) =>
+      prev.map((community: Community) =>
         community.id === communityId
           ? { ...community, isJoined: !community.isJoined }
           : community
       )
     );
 
-    const community = communities.find(c => c.id === communityId);
+    const community = communities.find((c: Community) => c.id === communityId);
     Alert.alert(
       'Thành công',
-      community?.isJoined ? `Đã rời khỏi ${community.name}` : `Đã tham gia ${community.name}`
+      community ? (community.isJoined ? `Đã rời khỏi ${community.name}` : `Đã tham gia ${community.name}`) : 'Cộng đồng không tồn tại'
     );
   };
-
-  const handlePostAction = (postId, action) => {
-    setPosts(prev =>
-      prev.map(post => {
+  const handlePostAction = (postId: string, action: string): void => {
+    setPosts((prev: Post[]) =>
+      prev.map((post: Post) => {
         if (post.id === postId) {
           switch (action) {
             case 'like':
@@ -190,7 +230,7 @@ const CommunitiesScreen = () => {
     );
   };
 
-  const handleMenuAction = (action) => {
+  const handleMenuAction = (action: MenuActionHandlerProps['action']): void => {
     setMenuVisible(false);
 
     switch (action) {
@@ -208,7 +248,7 @@ const CommunitiesScreen = () => {
     }
   };
 
-  const formatNumber = (num) => {
+  const formatNumber = (num: number): string => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -254,9 +294,8 @@ const CommunitiesScreen = () => {
       </View>
     </View>
   );
-
   const CategoryTabs = () => {
-    const handleCategoryPress = (index, categoryId) => {
+    const handleCategoryPress = (index: number, categoryId: string): void => {
       setActiveCategory(categoryId);
 
       // Auto scroll to center the selected tab
@@ -313,7 +352,7 @@ const CommunitiesScreen = () => {
     );
   };
 
-  const renderPost = ({ item }) => (
+  const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.post}>
       <View style={styles.communityHeader}>
         <View style={styles.communityInfo}>

@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Platform, S
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
-import globalStyles from '../globalStyles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -42,7 +41,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         {/* Logo */}
         <Image
           source={require('../assets/twitter.png')}
-          style={globalStyles.logo}
+          style={styles.logo}
         />
 
         <Text style={styles.title}>Create your account</Text>
@@ -97,6 +96,12 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: 30,
+    resizeMode: 'contain',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',

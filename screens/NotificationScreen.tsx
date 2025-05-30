@@ -15,7 +15,20 @@ import headerNotification from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 
-const mockNotifications = [
+interface Notification {
+  id: string;
+  type: 'new_post' | 'like' | 'retweet' | 'follow' | 'mention' | 'suggested';
+  users: string[];
+  content: string;
+  time: string;
+  isRead: boolean;
+  postContent?: string;
+  category: string;
+  isVerified?: boolean;
+  isSuggested?: boolean;
+}
+
+const mockNotifications: Notification[] = [
   {
     id: '1',
     type: 'new_post',
@@ -93,10 +106,10 @@ const mockNotifications = [
 
 const NotificationScreen = () => {
   const [activeTab, setActiveTab] = useState('all');
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = async () => {
+  const onRefresh = async (): Promise<void> => {
     setRefreshing(true);
     // Simulate network request
     setTimeout(() => {
@@ -105,7 +118,7 @@ const NotificationScreen = () => {
     }, 1500);
   };
 
-  const getFilteredNotifications = () => {
+  const getFilteredNotifications = (): Notification[] => {
     switch (activeTab) {
       case 'verified':
         return notifications.filter(notif => notif.isVerified || notif.category === 'verified');
@@ -116,7 +129,7 @@ const NotificationScreen = () => {
     }
   };
 
-  const handleNotificationPress = (notification) => {
+  const handleNotificationPress = (notification: Notification): void => {
     // Mark as read
     setNotifications(prev => 
       prev.map(notif => 
@@ -145,7 +158,7 @@ const NotificationScreen = () => {
     }
   };
 
-  const handleSettingsPress = () => {
+  const handleSettingsPress = (): void => {
     Alert.alert(
       'Cài đặt thông báo',
       'Tùy chọn thông báo sẽ được mở tại đây',
@@ -157,7 +170,7 @@ const NotificationScreen = () => {
     );
   };
 
-  const getNotificationIcon = (type) => {
+  const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
       case 'like':
         return <FontAwesome name="heart" size={16} color="#e74c3c" />;
@@ -176,7 +189,7 @@ const NotificationScreen = () => {
     }
   };
 
-  const renderNotification = ({ item }) => (
+  const renderNotification = ({ item }: { item: Notification }) => (
     <TouchableOpacity 
       style={[styles.notification, !item.isRead && styles.unreadNotification]}
       onPress={() => handleNotificationPress(item)}
@@ -186,7 +199,7 @@ const NotificationScreen = () => {
           {getNotificationIcon(item.type)}
         </View>
         <View style={styles.avatarsContainer}>
-          {item.users.slice(0, 3).map((user, index) => (
+          {item.users.slice(0, 3).map((user: string, index: number) => (
             <View 
               key={index} 
               style={[
