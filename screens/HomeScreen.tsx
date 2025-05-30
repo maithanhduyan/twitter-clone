@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, SafeAreaView, Modal, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, SafeAreaView, Modal, Alert, Image, RefreshControl } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -12,6 +12,15 @@ const tweets = [
   { id: '3', name: 'Tim Cook', username: 'tim_cook', content: 'Innovation is in our DNA.', time: '8h', likes: 3421, retweets: 892, comments: 234, views: 87000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: '4', name: 'Satya Nadella', username: 'satyanadella', content: 'Technology should empower everyone.', time: '12h', likes: 2156, retweets: 567, comments: 189, views: 65000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
   { id: '5', name: 'Jeff Bezos', username: 'JeffBezos', content: 'Customer obsession is everything.', time: '15h', likes: 5432, retweets: 1876, comments: 543, views: 142000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
+];
+
+// Sample new tweets for refresh simulation
+const newTweetsData = [
+  { id: 'new1', name: 'OpenAI', username: 'OpenAI', content: 'GPT-4 is now available to everyone!', time: 'now', likes: 12000, retweets: 3500, comments: 890, views: 250000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: 'new2', name: 'Meta', username: 'Meta', content: 'Introducing the next generation of VR technology.', time: '1m', likes: 8500, retweets: 2100, comments: 456, views: 180000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: 'new3', name: 'Google', username: 'Google', content: 'Machine learning is transforming how we search.', time: '5m', likes: 6700, retweets: 1800, comments: 320, views: 150000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: 'new4', name: 'Microsoft', username: 'Microsoft', content: 'Azure AI services now support 100+ languages.', time: '10m', likes: 4200, retweets: 1200, comments: 230, views: 95000, isFollowed: true, isLiked: false, isRetweeted: false, isBookmarked: false },
+  { id: 'new5', name: 'Tesla', username: 'Tesla', content: 'Full self-driving update rolling out globally.', time: '15m', likes: 15000, retweets: 4500, comments: 1200, views: 300000, isFollowed: false, isLiked: false, isRetweeted: false, isBookmarked: false },
 ];
 
 const trends = [
@@ -35,6 +44,48 @@ const HomeScreen = () => {
   const [activeTab, setActiveTab] = useState('forYou');
   const [menuVisible, setMenuVisible] = useState(null);
   const [selectedTweet, setSelectedTweet] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Simulate fetching new tweets
+  const fetchNewTweets = () => {
+    return new Promise((resolve) => {
+      // Simulate network delay
+      setTimeout(() => {
+        // Get random number of new tweets (1-3)
+        const numberOfNewTweets = Math.floor(Math.random() * 3) + 1;
+        const selectedNewTweets = newTweetsData
+          .slice(0, numberOfNewTweets)
+          .map(tweet => ({
+            ...tweet,
+            id: `${tweet.id}_${Date.now()}`, // Make IDs unique
+            time: Math.random() > 0.5 ? 'now' : `${Math.floor(Math.random() * 5) + 1}m`
+          }));
+        resolve(selectedNewTweets);
+      }, 1500); // 1.5 second delay to simulate network request
+    });
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const newTweets = await fetchNewTweets();
+      setTweetList(prevTweets => [...newTweets, ...prevTweets]);
+      
+      // Show success message
+      if (newTweets.length > 0) {
+        Alert.alert(
+          'Cập nhật thành công', 
+          `Đã tải ${newTweets.length} tweet mới!`,
+          [{ text: 'OK' }],
+          { cancelable: true }
+        );
+      }
+    } catch (error) {
+      Alert.alert('Lỗi', 'Không thể tải tweets mới. Vui lòng thử lại.');
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleCreateTweet = () => {
     if (newTweetText.trim().length === 0) {
@@ -436,6 +487,16 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         style={styles.flatList}
         contentContainerStyle={displayTweets.length === 0 ? styles.emptyListContainer : {}}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#1DA1F2']} // Android
+            tintColor="#1DA1F2" // iOS
+            title="Đang tải tweets mới..." // iOS
+            titleColor="#657786" // iOS
+          />
+        }
       />
 
       {/* Floating Action Button */}

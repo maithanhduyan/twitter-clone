@@ -288,7 +288,7 @@ Trên Twitter (nay gọi là **X**), thanh điều hướng đầu trang có hai
 
 ---
 
-### 1. **For you** (Dành cho bạn)
+1. **For you** (Dành cho bạn)
 
 * ✅ **Nội dung hiển thị**:
   Dòng thời gian được **thuật toán đề xuất**, gồm:
@@ -305,7 +305,7 @@ Trên Twitter (nay gọi là **X**), thanh điều hướng đầu trang có hai
 
 ---
 
-### 2. **Following** (Đang theo dõi)
+2. **Following** (Đang theo dõi)
 
 * ✅ **Nội dung hiển thị**:
   Chỉ hiển thị bài đăng từ những tài khoản **bạn đang theo dõi**.
@@ -318,13 +318,129 @@ Trên Twitter (nay gọi là **X**), thanh điều hướng đầu trang có hai
 
 ---
 
-### 📝 Tóm lại:
+📝 Tóm lại:
 
 | Tab           | Nội dung               | Sắp xếp        | Gợi ý người lạ |
 | ------------- | ---------------------- | -------------- | -------------- |
 | **For you**   | Gợi ý từ thuật toán    | Theo liên quan | Có             |
 | **Following** | Tài khoản bạn theo dõi | Theo thời gian | Không          |
 
+
+### Chức năng đăng bài (Post)
+**giao diện tạo Tweet mới** trên Twitter Clone. Dưới đây là phần mô tả **layout** và chức năng của từng thành phần:
+
+---
+
+## 📋 **TỔNG THỂ LAYOUT**
+
+* **Ảnh đại diện** (trái trên cùng): Avatar tài khoản bạn đang dùng để đăng tweet.
+* **Khung nhập nội dung**: Nơi bạn nhập nội dung tweet ("What’s happening?").
+* **Tùy chọn người trả lời**: "Everyone can reply" – cho phép bạn kiểm soát ai được phép phản hồi.
+* **Thanh công cụ biểu tượng (icon)**: Chèn ảnh, GIF, poll, cảm xúc, v.v.
+* **Nút điều hướng & chức năng**:
+
+  * ⬅️ (góc trái trên cùng): Thoát khỏi trình soạn tweet.
+  * **Drafts**: Xem các tweet đã lưu nháp.
+  * **Post**: Đăng tweet.
+
+---
+
+## 🔵 **CÁC CHỨC NĂNG CỤ THỂ**
+
+### 🔘 `Everyone can reply`
+
+* Đây là cài đặt quyền **trả lời tweet**.
+* Nhấn vào để thay đổi thành:
+
+  * ✅ **Everyone can reply** – Mọi người đều có thể trả lời.
+  * 👥 **People you follow** – Chỉ người bạn theo dõi mới trả lời được.
+  * 🙋 **Only people you mention** – Chỉ người được gắn thẻ trong tweet mới được trả lời.
+
+---
+
+### 🗂️ `Drafts`
+
+* Hiển thị danh sách các tweet **đã soạn nhưng chưa đăng**.
+* Cho phép bạn chỉnh sửa, đăng hoặc xóa các tweet nháp.
+
+---
+
+### 🚀 `Post`
+
+* Nút **đăng tweet** chính thức.
+* Chỉ có thể bấm nếu có nội dung được nhập hoặc tệp đính kèm hợp lệ.
+
+---
+
+## 🧩 **DANH SÁCH ICON CHÈN (TỪ TRÁI SANG PHẢI)**
+
+1. 🖼️ **Ảnh (Image)** – Tải ảnh từ máy vào tweet.
+2. 🎞️ **GIF** – Thêm ảnh động từ thư viện GIF của Twitter.
+3. 📊 **Poll** – Tạo bình chọn với các lựa chọn.
+4. 📅 **Schedule** – Đặt lịch để đăng tweet sau (nếu bạn có X Premium).
+5. 😀 **Emoji** – Mở bộ chọn biểu tượng cảm xúc.
+6. 📷 **Camera** – Mở camera (chụp ảnh/video trực tiếp).
+7. 📍 **Location** – Gắn địa điểm vào tweet.
+
+### Màn hình Search (Tìm kiếm)
+**màn hình “Search” (Tìm kiếm)** của ứng dụng Twitter Clone trên thiết bị di động . Dưới đây là mô tả chi tiết về **layout** và **tính năng** của từng phần:
+
+---
+
+## 🧭 **LAYOUT TỔNG THỂ & CHỨC NĂNG**
+
+### 📍 **1. Thanh tìm kiếm (Search bar)** – Trên cùng
+
+* Có biểu tượng kính lúp và dòng chữ **"Search Twitter"**.
+* Chức năng:
+
+  * Nhấn vào để nhập từ khóa.
+  * Tìm người dùng, hashtag, chủ đề, hoặc tweet.
+
+---
+
+### 🧵 **2. Mục “Trends for you” (Xu hướng dành cho bạn)**
+
+* Tiêu đề: **Trends for you** – những chủ đề nổi bật Twitter đề xuất riêng cho bạn.
+* Hiện tại bạn thấy thông báo:
+
+  > “No new trends for you”
+  > Nghĩa là: chưa có xu hướng nào nổi bật trong khu vực hiện tại.
+
+#### 🔘 Nút **“Change location”**
+
+* Chức năng: thay đổi khu vực địa lý để xem xu hướng tại nơi khác (ví dụ: chuyển từ Việt Nam sang Mỹ hoặc Nhật).
+* Khi nhấn: bạn chọn quốc gia/thành phố và sẽ thấy các trending topics của nơi đó.
+
+---
+
+### 🧭 **3. Thanh điều hướng dưới cùng** (Bottom Navigation Bar)
+
+| Biểu tượng       | Chức năng                                      |
+| ---------------- | ---------------------------------------------- |
+| 🏠 Home          | Trở lại trang dòng thời gian chính.            |
+| 🔍 Search        | Trang bạn đang xem – tìm kiếm và xem xu hướng. |
+| 🔔 Notifications | Xem thông báo (like, reply, retweet…).         |
+| ✉️ Messages      | Truy cập tin nhắn trực tiếp (DM).              |
+
+---
+
+### 🖊️ **4. Nút soạn tweet (nút tròn xanh, góc dưới phải)**
+
+* Biểu tượng bút + tia chớp.
+* Nhấn để mở khung **tạo tweet mới** từ bất kỳ nơi nào trong app.
+
+---
+
+## 📌 Gợi ý nâng cao
+
+Bạn có thể sử dụng tính năng tìm kiếm để:
+
+* Tìm bài viết theo từ khóa, hashtag.
+* Tìm tài khoản người dùng (bằng tên hoặc @handle).
+* Lọc kết quả theo tab: **Top, Latest, People, Photos, Videos** (sẽ hiển thị sau khi bạn bắt đầu tìm kiếm).
+
+---
 
 
 
