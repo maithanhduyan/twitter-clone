@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { FontAwesome } from '@expo/vector-icons';
 
+
 const Header = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const stackNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
