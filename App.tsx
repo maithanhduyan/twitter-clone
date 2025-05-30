@@ -1,12 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigation/RootNavigator';
+import { AuthProvider } from './contexts/AuthContext';
 
-const App = () => {
+const App: React.FC = () => {
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 
